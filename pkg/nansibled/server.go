@@ -1,8 +1,6 @@
 package nansibled
 
 import (
-	"net/http"
-
 	"github.com/albrow/zoom"
 	"github.com/gin-gonic/gin"
 	"github.com/nats-io/nats.go"
@@ -50,7 +48,7 @@ func (svr *Server) SetupRoutes(api gin.IRouter) {
 	api.PUT("/groups/:name/playbook/:playbook", updateAttributeHandler(svr.db.groups, new(group), "playbook", "playbook"))
 	api.PUT("/groups/:name/deploy", svr.handleDeployGroup)
 
-	api.GET("/requests", findAllModelsHandler(svr.db.reqs, new([]*http.Request)))
+	// api.GET("/requests", findAllModelsHandler(svr.db.reqs, new([]*http.Request)))
 	api.GET("/deploys", findAllModelsHandler(svr.db.deploys, new([]*deploy)))
 	api.GET("/deploys/:name", findModelHandler(svr.db.deploys.Find, new(deploy), "name"))
 	api.GET("/deploys/:name/running", svr.handleRunningDeploys)
