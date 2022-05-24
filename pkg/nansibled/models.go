@@ -30,7 +30,7 @@ func (pb *playbook) SetModelID(x string) { pb.ID = x }
 
 type group struct {
 	Name     string   `json:"name,omitempty"`
-	Playbook string   `json:"playbook,omitempty"`
+	Playbook string   `json:"playbook,omitempty" zoom:"index"`
 	Hosts    []string `json:"hosts,omitempty"`
 }
 
@@ -39,7 +39,7 @@ func (g *group) SetModelID(x string) { g.Name = x }
 
 type host struct {
 	Name                 string      `json:"name"`
-	State                deployState `json:"state"`
+	State                deployState `json:"state" zoom:"index"`
 	LastDeployedAt       time.Time   `json:"last_deployed_at"`
 	LastDeployedPlaybook string      `json:"last_deployed_playbook"`
 	LastAckedPlaybook    string      `json:"last_acked_playbook"`
@@ -59,6 +59,7 @@ type NansibleMessage struct {
 	Playbook string `json:"playbook,omitempty"`
 	Payload  string `json:"payload,omitempty"`
 	Deploy   string `json:"deploy,omitempty"`
+	Error    string `json:"error,omitempty"`
 }
 
 func (nsg NansibleMessage) Bytes() []byte {
@@ -89,3 +90,10 @@ type key struct {
 func (k key) ModelID() string      { return k.Token }
 func (k *key) SetModelID(x string) { k.Token = x }
 
+// type req struct {
+// 	ID string
+// 	http.Request
+// }
+
+// func (k key) ModelID() string      { return k.Token }
+// func (k *key) SetModelID(x string) { k.Token = x }
