@@ -59,11 +59,24 @@ func findAllModels(c *gin.Context, db findAller, models interface{}) {
 		abortWithError(c, 500, err)
 		return
 	}
-	// TODO: type switch to correctly detect 404
-	// if reflect.ValueOf(models).Len() == 0 {
-	// 	c.AbortWithStatus(404)
-	// 	return
-	// }
+	switch v := models.(type) {
+	case *[]*host:
+		if len(*v) == 0 {
+			models = []string{}
+		}
+	case *[]*deploy:
+		if len(*v) == 0 {
+			models = []string{}
+		}
+	case *[]*playbook:
+		if len(*v) == 0 {
+			models = []string{}
+		}
+	case *[]*group:
+		if len(*v) == 0 {
+			models = []string{}
+		}
+	}
 	c.JSON(200, models)
 }
 
