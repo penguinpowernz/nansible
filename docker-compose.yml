@@ -1,0 +1,25 @@
+version: "2"
+
+
+services:
+  server:
+    image: nansibled:latest
+    build: .
+    volumes:
+      - "./data:/data"
+    environment:
+      - REDIS_URL=redis:6379
+      - NATS_URL=nats:4222
+    depends_on:
+      - redis
+      - nats
+    ports:
+      - "8090:8090"
+  
+  redis:
+    image: redis:latest
+  
+  nats:
+    image: nats:latest
+    ports:
+      - "4222:4222"
