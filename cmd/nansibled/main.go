@@ -8,6 +8,12 @@ import (
 func main() {
 	nc, err := nats.Connect(nats.DefaultURL)
 
+	switch {
+	case createKey != "":
+		svr.CreateKey(createKey)
+		return
+	}
+
 	api := gin.Default()
 	svr := nansibled.NewServer(nc)
 	svr.SetupRoutes(api)

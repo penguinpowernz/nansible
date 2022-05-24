@@ -2,10 +2,46 @@ package nansibled
 
 import (
 	"errors"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
 )
+
+func (svr *Server) requestAuthorizer(c *gin.Context) {
+	var token string
+	setToken := func(t string) (wasSet bool) {
+		if t != "" {
+			token = t
+			wasSet = true
+		}
+		return
+	}
+
+	switch {
+	case setToken(c.GetHeader("Authorization")):
+	case setToken(c.GetHeader("X-Api-Key")):
+	case setToken(c.GetHeader("X-API-KEY")):
+	case setToken(c.Query("api_key")):
+	case setToken(c.Query("apikey")):
+	case setToken(c.Query("token")):
+	}
+
+	token = strings.ReplaceAll(token, "Bearer ", "")
+
+	if token == "" {
+		c.AbortWithError(401, errors.New("token not found in request"))
+		return
+	}
+
+	var k key
+	if err := svr.db.keys.Find(token, &k); err != nil {
+		c.AbortWithError(401, err)
+		return
+	}
+
+	c.Set("user", k.Name)
+}
 
 func (svr *Server) handleRmHostFromGroup(c *gin.Context) { c.AbortWithStatus(501) }
 

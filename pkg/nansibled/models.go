@@ -78,3 +78,14 @@ func ParseNanMsg(data []byte) (NansibleMessage, error) {
 	err := json.Unmarshal(data, &m)
 	return m, err
 }
+
+type key struct {
+	Name      string `zoom:"index"`
+	Token     string
+	CreatedAt time.Time
+	CreatedBy string
+}
+
+func (k key) ModelID() string      { return k.Token }
+func (k *key) SetModelID(x string) { k.Token = x }
+

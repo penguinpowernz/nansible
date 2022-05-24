@@ -31,6 +31,8 @@ func NewServer(nc *nats.Conn) *Server {
 }
 
 func (svr *Server) SetupRoutes(api gin.IRouter) {
+	api.Use(svr.requestAuthorizer)
+
 	api.GET("/playbooks/", findAllModelsHandler(svr.db.playbooks, new([]*playbook)))
 	api.GET("/playbooks/:name", findModelHandler(svr.db.playbooks.Find, new(playbook), "name"))
 	api.DELETE("/playbooks/:name", deleteModelHandler(svr.db.playbooks))
