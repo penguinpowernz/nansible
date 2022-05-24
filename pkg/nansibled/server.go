@@ -8,14 +8,6 @@ import (
 	"github.com/nats-io/nats.go"
 )
 
-type db struct {
-	hosts     *zoom.Collection
-	playbooks *zoom.Collection
-	groups    *zoom.Collection
-	reqs      *zoom.Collection
-	deploys   *zoom.Collection
-}
-
 type Server struct {
 	nc *nats.Conn
 	db *db
@@ -23,8 +15,10 @@ type Server struct {
 	running []*deploy
 }
 
-func NewServer(nc *nats.Conn) *Server {
+func NewServer(nc *nats.Conn, pool *zoom.Pool) *Server {
 	svr := &Server{nc: nc}
+	svr.db = newDB(pool)
+
 	go svr.identifyHosts()
 
 	return svr

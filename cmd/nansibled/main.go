@@ -7,6 +7,9 @@ import (
 
 func main() {
 	nc, err := nats.Connect(nats.DefaultURL)
+	pool := zoom.NewPoolWithOptions(zoom.DefaultPoolOptions.WithAddress(redisURL).WithDatabase(8))
+
+	svr := nansibled.NewServer(nc, pool)
 
 	switch {
 	case createKey != "":
@@ -15,7 +18,6 @@ func main() {
 	}
 
 	api := gin.Default()
-	svr := nansibled.NewServer(nc)
 	svr.SetupRoutes(api)
 
 	api.Run(":8090")
